@@ -1,0 +1,79 @@
+{
+    "api_config": {
+        "description": "图像生成 API 的基础连接配置，包含端点、密钥和模型选择。",
+        "type": "object",
+        "hint": "注意：由于 Astrbot 不支持动态选择图片生成提供商，此处需手动填写目标 API 的完整信息。",
+        "items": {
+            "base_url": {
+                "description": "API 服务的完整端点 URL 地址。",
+                "type": "string",
+                "default": "https://api.siliconflow.cn/v1/images/generations"
+            },
+            "api_key": {
+                "description": "用于 API 身份验证的密钥，请妥善保管。",
+                "type": "string"
+            },
+            "model": {
+                "description": "指定用于图像生成的具体模型名称。",
+                "type": "string",
+                "default": "Qwen/Qwen-Image-Edit-2509"
+            }
+        }
+    },
+    "model_parameters": {
+        "description": "控制图像生成质量与性能的核心推理参数。",
+        "type": "object",
+        "hint": "调整此处参数会直接影响生成效果和响应速度，请按需设置。",
+        "items": {
+            "image_size": {
+                "description": "预设的图像输出尺寸选项列表。",
+                "type": "list",
+                "hint": "若提供多个尺寸，LLM 将根据上下文自主选择最合适的尺寸；若仅一个则固定使用该尺寸。",
+                "default": ["720x1280"]
+            },
+            "num_inference_steps": {
+                "description": "模型推理迭代步数，影响图像细节质量。",
+                "type": "int",
+                "hint": "步数越高，生成质量通常越好，但耗时也相应增加，请酌情平衡。",
+                "default": 20
+            },
+            "extra_params": {
+                "description": "模型特有的额外扩展参数列表。",
+                "type": "list",
+                "hint": "请按 '参数名:参数值' 格式填写，例如：['guidance_scale:7.5', 'seed:42']。",
+                "default": []
+            }
+        }
+    },
+    "user_usage_limits": {
+        "description": "面向用户及系统的资源消耗与安全控制策略。",
+        "type": "object",
+        "hint": "这些限制用于平衡用户体验与成本控制，防止资源超额使用。",
+        "items": {
+            "cost_per_image": {
+                "description": "单张图像生成的虚拟成本计费单位。",
+                "type": "float",
+                "hint": "用于统计用户及每日的总消耗量，便于进行额度核算与成本追踪。",
+                "default": 0.3
+            },
+            "requests_per_minute": {
+                "description": "单个用户每分钟允许的最大 API 请求次数。",
+                "type": "int",
+                "hint": "用于防止单用户短时间内的突发流量，保障服务稳定性。",
+                "default": 2
+            },
+            "daily_cost_limit_per_user": {
+                "description": "单个用户每天可消耗的最大成本额度。",
+                "type": "float",
+                "hint": "达到此阈值后该用户当天的后续请求将被拒绝，次日重置。",
+                "default": 3
+            },
+            "global_daily_cost_limit": {
+                "description": "系统全局每天允许消耗的总成本上限。",
+                "type": "float",
+                "hint": "当所有用户的当日总成本达到此限额时，系统将暂停全部图像生成服务，保护您的预算。",
+                "default": 10
+            }
+        }
+    }
+}
